@@ -4,6 +4,8 @@ const port = 5000
 const bodyParser = require('body-parser');
 const { User } = require("./models/User");
 
+const config = require('./config/key');
+
 //application/x-www-form-urlencoded 이 정보를 가져올수 있게
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -12,7 +14,7 @@ app.use(bodyParser.json());
 
 // mongoDB연결
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://sch:k23456@boilerplate.erva9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{
+mongoose.connect(config.mongoURI,{
   useNewUrlParser: true, useUnifiedTopology: true
 }).then(() => console.log('mongoDB Connected...'))
   .catch(err => console.log(err))
@@ -28,8 +30,10 @@ mongoose.connect('mongodb+srv://sch:k23456@boilerplate.erva9.mongodb.net/myFirst
 
 
 // 간단한 hello world 라우터
+// npm run backend => nodemon으로 서버를 자동 재기동, 페이지 refresh 적용
+// loaclhost:5000
 app.get('/', (req, res) => {
-  res.send('Hello World!~~ 안녕 하세요')
+  res.send('Hello World!~~ 안녕하세요 nodemon')
 })
 
 
