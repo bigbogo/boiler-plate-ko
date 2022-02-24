@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engine": {
+    "node": "12.12.0",
+    "npm": "7.22.0"
+  },
   "scripts": {
     "start": "node index.js",
     "backend": "nodemon index.js",
@@ -11,6 +15,7 @@
   "author": "sch",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.2",
     "express": "^4.17.2",
     "mongoose": "^6.2.1"
