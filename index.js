@@ -30,6 +30,7 @@ const express = require('express')
 const app = express()
 const port = 5000
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const { User } = require("./models/User");
 
 const { use } = require('bcrypt/promises');
@@ -41,6 +42,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 //application/json 이 정보를 가져올수 있게
 app.use(bodyParser.json());
+
+app.use(cookieParser());
 
 // mongoDB연결
 const mongoose = require('mongoose');
@@ -64,7 +67,7 @@ mongoose.connect(config.mongoURI,{
 // npm run backend => nodemon으로 서버를 자동 재기동, 페이지 refresh 적용
 // loaclhost:5000
 app.get('/', (req, res) => {
-  res.send('Hello World!~~ 안녕하세요 nodemon')
+  res.send('Hello World!~~ 안녕하세요 nodemon~~ !!')
 })
 
 
@@ -88,15 +91,40 @@ app.post('/register', (req, res) => {
 
 /////// 로그인 기능
 app.post('/login', (req, res) => {
-
+  console.log("1")
     //요청한 이메일을 데이터베이스에서 있는지 찾는다
-    User.findOne({ email: req.body.email}, (err, userInfo) => {
+    //Mongodb 제공 메소드 이용(findOne)
+    User.findOne({ email: req.body.email}, (err, user) => {
+        if(!user) {
+          return res.json({ 
+            loginSuccess: false,
+            message: "이메일에 해당하는 user가 없습니다."
+          })
+        }
+        console.log("2")
 
+    //요청한 이메일이 데이터베이스에 있으면, user에 담겨있겠지... 비밀번호가 맞는 비밀번호인지 확인
+    user.comparePassword(req.body.password , (err, isMatch) => {
+      console.log('err', err)
+      console.log('isMatch', isMatch)
+      if(!isMatch) //비밀번호가 틀리면
+        return res.json({ loginSucess: false, message: "비밀번호가 틀렸습니다." }); 
+      
+        console.log("3")
+      //비밀번호가 맞다면 토큰을 생성하기
+        user.generateToken((err, user) => {
+          if(err) return res.status(400).send(err);
+          console.log("4")
+        // 토큰을 저장한다. 쿠키 , 로컬스토리지 등에 저장
+        res.cookie("x_auth", user.token)
+        .status(200) // 성공했다
+        .json({ loginSuccess: true, userId: user.id })
+
+      })
     })
-    //요청한 이메일이 데이터베이스에 있으면 비밀번호가 맞는 비밀번호인지 확인
-
-    //비밀번호가 맞다면 토큰을 생성하기
+  })
 })
+    
 
 
 app.listen(port, () => {

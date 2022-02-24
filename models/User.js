@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt'); // API문서 확인 -> https://www.npmjs.com/package/bcrypt
 const saltRounds = 10 //salt(몇글자인지 10자리)를 이용해서 비밀번호를 암호화
 
+const jwt = require('jsonwebtoken');
+
 const userSchema = mongoose.Schema({
     name: {
         type: String,
@@ -59,6 +61,33 @@ userSchema.pre('save', function( next ){
         next()
     }
 })
+
+
+// index.js에 비밀번호 체크를 User.js 모델에서 만들자
+userSchema.methods.comparePassword = function(plainPassword, cb) {
+    //비밀번호를 비교할때 plainPassword(입력된패스워드) 와 암호화된 비밀번호($2b$10$t6FqzLFiRVntMF21OPh4yekWnL1czIrfAzTCbi3LZa/NzB1GIkXh2) 를 체크
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
+        if(err) return cb(err) // 리턴 cb(콜백) 에러
+        cb(null, isMatch)  // 에러는 없고, isMatch는 true 비밀번호가 맞으면 
+    })
+}
+
+
+userSchema.methods.generateToken = function(cb) {
+    var user = this;
+    
+    // jsonwebtoken을 이용해서 token을 생성하기
+    var token = jwt.sign(user._id.toHexString(), 'secretToken')  // mongodb 의 _id를 넣어주자, secretToken 은 아무 단어 넣어주면됨 
+
+    // 위에 userSchema 에 token에 넣어준다 tokenExp 는 나중에 하자
+    user.token = token
+    user.save(function(err, user){
+        if(err) return cb(err)
+        cb(null, user)
+    })
+}
+
+
 
 const User = mongoose.model('User', userSchema)
 
