@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt'); // API문서 확인 -> https://www.npmjs.com/package/bcrypt
 const saltRounds = 10 //salt(몇글자인지 10자리)를 이용해서 비밀번호를 암호화
 
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');  // jsonwebtoken 을 사용
 
 const userSchema = mongoose.Schema({
     name: {
@@ -87,6 +87,22 @@ userSchema.methods.generateToken = function(cb) {
     })
 }
 
+
+
+userSchema.statics.findByToken = function( token, cb) {
+    var user = this;
+
+    // 토큰을 디코드 한다, 토큰을 만들었던 이름 : secretToken
+    jwt.verify(token, 'secretToken', function(err, decoded) {
+        // 유저 아이디를 이용해서 유저를 찾은 다음 클라이언트에서 가져온 토큰과 DB에 보관된 토큰이 일치하는지 확인
+         // findOne은 몽고DB에 있는 메소드임. findOne찾기 _id 와 token 을 찾는데
+        user.findOne({"_id": decoded, "token": token}, function(err, user){  
+            if (err) return cb(err);  // 에러가 있으면 cd 콜백 err 를 리턴
+            cb(null, user)        // 없으면 user
+        }) 
+
+    })
+}
 
 
 const User = mongoose.model('User', userSchema)

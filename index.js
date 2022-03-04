@@ -31,6 +31,10 @@ const app = express()
 const port = 5000
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+
+// auth를 가져오자 import
+const { auth } = require('./middleware/auth')
+
 const { User } = require("./models/User");
 
 const { use } = require('bcrypt/promises');
@@ -74,7 +78,7 @@ app.get('/', (req, res) => {
 
 
 // 라우터는 /register
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
   // 회원 가입할때 필요한 정보들을 client에서 가져오면 그 정보를 데이터에 넣어준다
   const user = new User(req.body) // req.body를 모델에 넣자, req.body에 json 형태의 정보들 - bodyparser가 json형태로 만들어줌
 
@@ -90,7 +94,7 @@ app.post('/register', (req, res) => {
 
 
 /////// 로그인 기능
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
   console.log("1")
     //요청한 이메일을 데이터베이스에서 있는지 찾는다
     //Mongodb 제공 메소드 이용(findOne)
@@ -125,6 +129,30 @@ app.post('/login', (req, res) => {
   })
 })
     
+
+// auth 미들웨어 추가 (로그인 후 로컬PC 쿠키를 가져와 검증후 user정보를 리턴하는 미들웨어)
+app.get('/api/users/auth', auth, (req, res) => {
+  //req.user
+  //req.token 으로 사용
+
+  // role 0 -> 일반유저  role 0 이 아니면 관리자
+
+  // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication 이 True 라는 것임
+  res.status(200).json({
+    _id: req.user._id, // _id를 클라이언트에 전달해주기 위해
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name : req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image
+
+  })
+})
+
+
+
 
 
 app.listen(port, () => {
