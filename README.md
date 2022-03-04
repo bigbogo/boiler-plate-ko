@@ -33,3 +33,13 @@ body-parser Dependency 다운받아서 추가
 npm install body-parser --save
 
 
+
+
+실행시
+npm run start 
+
+실행 테스트시 서버 재기동 할필요없는 테스트 구동은(nodemon 사용)
+npm run backend
+
+
+
