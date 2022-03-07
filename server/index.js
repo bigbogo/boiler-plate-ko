@@ -28,6 +28,8 @@ Node.js는 이벤트기반, 논블로킹 I/O 모델을 사용해 가볍고 효�
 // node.js가, 자동차 엔진이라면 바퀴나 브레이크시스템 등(웹사이트나, 어플리케이션)을 쉽게 만들 수 있게 해주는 프레임워크(express.js)
 const express = require('express') 
 const app = express()
+
+// 노드서버 포트 5000번 사용
 const port = 5000
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -74,6 +76,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!~~ 안녕하세요 nodemon~~ !!')
 })
 
+
+app.get('/api/hello', (req, res) => {
+  res.send('안녕하세요 !!!!!! ')
+})
 
 
 
