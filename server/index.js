@@ -117,6 +117,7 @@ app.post('/api/users/login', (req, res) => {
     user.comparePassword(req.body.password , (err, isMatch) => {
       console.log('err', err)
       console.log('isMatch', isMatch)
+      
       if(!isMatch) //비밀번호가 틀리면
         return res.json({ loginSucess: false, message: "비밀번호가 틀렸습니다." }); 
       
@@ -127,8 +128,8 @@ app.post('/api/users/login', (req, res) => {
           console.log("4")
         // 토큰을 저장한다. 쿠키 , 로컬스토리지 등에 저장
         res.cookie("x_auth", user.token)
-        .status(200) // 성공했다
-        .json({ loginSuccess: true, userId: user.id })
+          .status(200) // 성공했다
+          .json({ loginSuccess: true, userId: user.id })
 
       })
     })
