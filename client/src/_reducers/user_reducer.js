@@ -9,7 +9,8 @@
 //      └------------- dispatch(action) --------- react Component <--------  Subscribe  ----------┘
 
 import { 
-    LOGIN_USER
+    LOGIN_USER,
+    REGISTER_USER
 } from '../_actions/types';
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -27,7 +28,9 @@ export default function (state = {}, action) {    // 이전state, action 으로 
                 console.log(arr2); // [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
             */
             break;
-    
+        case REGISTER_USER:
+            return {...state, register: action.payload}
+            break;
         default:
             return state;
     }
