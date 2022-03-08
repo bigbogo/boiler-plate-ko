@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch} from 'react-redux'
 import { registerUser} from '../../../_actions/user_action';
+import { withRouter } from 'react-router-dom';
 
 function RegisterPage(props) {
   //Dispatch 를 통해서 action을 날림
@@ -52,7 +53,7 @@ function RegisterPage(props) {
             
             if(response.payload.success) {
                 // 회원가입 성공시
-                props.history.push('/login')
+                props.history.push('/login')  // history.push 를 사용하려면 react-router-dom 을 import 해서 쓰는거로 바뀜 withRouter()
             }else{
                 alert('Failed to sign up !!!')
             }
@@ -91,4 +92,4 @@ function RegisterPage(props) {
   )
 }
 
-export default RegisterPage
+export default withRouter(RegisterPage)

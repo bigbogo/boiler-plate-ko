@@ -9,6 +9,7 @@ import {
 import LandingPage from './views/LandingPage/LandingPage'
 import LoginPage from './views/LoginPage/LoginPage'
 import RegisterPage from './views/RegisterPage/RegisterPage'
+import Auth from '../hoc/auth'
 
 // This site has 3 pages, all of which are rendered
 // dynamically in the browser (not server rendered).
@@ -31,9 +32,9 @@ export default function App() {
           of them to render at a time
         */}
         <Switch>
-          <Route exact path="/" component={LandingPage} />
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/" component={Auth(LandingPage, null) } />
+          <Route exact path="/login" component={Auth(LoginPage, false) } />
+          <Route exact path="/register" component={Auth(RegisterPage, false) } />
         </Switch>
       </div>
     </Router>

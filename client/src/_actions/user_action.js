@@ -6,7 +6,8 @@
 import axios from 'axios';
 import { 
     LOGIN_USER,
-    REGISTER_USER
+    REGISTER_USER,
+    AUTH_USER
 } from './types';
 
 export function loginUser(dataToSubmit){
@@ -32,6 +33,19 @@ export function registerUser(dataToSubmit){
     //return을 시켜서 reducer로 넘겨주는 작업
     return{
         type: REGISTER_USER,  // types.js 에서 가져오는 식으로 변경
+        payload: request
+    }
+}
+
+
+export function auth(dataToSubmit){
+
+    const request = axios.get('/api/users/auth')   // backend서버에 index.js  /api/users/auth 로 보낸다
+       .then(response => response.data )
+
+    //return을 시켜서 reducer로 넘겨주는 작업
+    return{
+        type: AUTH_USER,
         payload: request
     }
 }
