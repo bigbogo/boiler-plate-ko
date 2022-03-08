@@ -43,7 +43,7 @@ function LoginPage(props) {
                 
                 if(response.payload.loginSuccess) {
                     // 로그인이 성공했을때 root 페이지로 이동시킨다. (root페이지 = LandingPage)
-                    props.history.push('/')
+                    props.history.push('/')    // history.push 를 사용하려면 react-router-dom 을 import 해서 쓰는거로 바뀜 withRouter()
                 }else{
                     alert('Error!!!')
                 }
